@@ -1,5 +1,6 @@
 from pprint import pp
 import pandas as pd
+import random
 
 class User:
 	pass
@@ -7,8 +8,10 @@ class User:
 
 class Hotel:
 	def __init__(self, customer_name="Customer"):
+		df = pd.read_csv("hotel_data.csv")
+
+		self.df = df
 		self.customer_name = customer_name.lower()
-		self.df = pd.read_csv("hotel_data.csv")
 
 
 	def book_room(self, hotel_id):
@@ -38,18 +41,28 @@ class Hotel:
 
 
 class Reservation:
-	def __init__(self, hotel_obj, customer_name):
-		self.hotel_obj = hotel_obj.lower()
+	def __init__(self, hotel_id, customer_name):
+		df = pd.read_csv("hotel_data.csv")
+
+		self.hotel_id = hotel_id
 		self.customer_name = customer_name.lower()
+		self.name = df.loc[df["id"] == self.hotel_id, "name"].squeeze()
 
 
 	def generate_invoice(self):
-		content = f"{self.customer_name} has booked a room at {self.hotel_obj}"
+		booking_id = random.randint(1000, 9999)
+		content = f"""
+		Thank you for booking with us!
+
+		Here is your booking information:
+		Booking ID: {booking_id:04}
+		{self.customer_name.capitalize()}, has booked a room at \'{self.name}\'"""
 		return content
 
 
 if __name__ == "__main__":
-	hotel = Hotel("Gio")
+	# customer_name = input("What is your name: ")
+	hotel = Hotel()
 	hotel.list_hotels()
 
 	hotel_id = int(input("\nEnter the ID of the hotel: "))
@@ -58,10 +71,8 @@ if __name__ == "__main__":
 	if hotel.is_available(hotel_id):
 		hotel.book_room(hotel_id)
 
-		"""
-		res = Reservation("hotel_test", "Giovanni")
+		res = Reservation(hotel_id, "Giovanni")
 		print(res.generate_invoice())
-		"""
 
 	else:
 		print("This hotel is unavailable")
