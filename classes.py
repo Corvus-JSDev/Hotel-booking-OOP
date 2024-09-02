@@ -63,6 +63,8 @@ class Reservation:
 
 
 class CreditCard:
+	"""Check if the credit card is a valid card"""
+
 	def __init__(self, card_number, exp_date, holder, cvc):
 		self.card_number = card_number
 		self.exp_date = exp_date
@@ -78,11 +80,15 @@ class CreditCard:
 		return True if credit_card in card_df else False
 
 
+class SecureCreditCard:
+	"""Get the username and password for that card"""
 
+	pass
 
 
 if __name__ == "__main__":
 	# customer_name = input("What is your name: ")
+
 	hotel = Hotel()
 	hotel.list_hotels()
 
@@ -90,7 +96,8 @@ if __name__ == "__main__":
 
 	# Booking a room
 	if hotel.is_available(hotel_id):
-		credit_card = CreditCard(card_number="1234567890123456", exp_date="05/27", holder="JOHN SMITH", cvc="123")  # Skipping the user input step for simplicity
+		credit_card = CreditCard(card_number="1234567890123456", exp_date="05/27",
+						 holder="JOHN SMITH", cvc="123")  # Skipping the user input step for simplicity
 
 		if credit_card.validate():
 			hotel.book_room(hotel_id)
