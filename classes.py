@@ -5,6 +5,8 @@ import random
 class User:
 	pass
 
+card_df = pd.read_csv("cards.csv", dtype=str).to_dict(orient="records")  # Load all the values as a string, and convert to a dictionary
+
 
 class Hotel:
 	def __init__(self, customer_name="Customer"):
@@ -60,6 +62,25 @@ class Reservation:
 		return content
 
 
+class CreditCard:
+	def __init__(self, card_number, exp_date, holder, cvc):
+		self.card_number = card_number
+		self.exp_date = exp_date
+		self.holder = holder
+		self.cvc = cvc
+
+	def validate(self):
+		credit_card = {'number': self.card_number,
+				   'expiration': self.exp_date,
+				   'cvc': self.cvc,
+				   'holder': self.holder}
+
+		return True if credit_card in card_df else False
+
+
+
+
+
 if __name__ == "__main__":
 	# customer_name = input("What is your name: ")
 	hotel = Hotel()
@@ -69,10 +90,15 @@ if __name__ == "__main__":
 
 	# Booking a room
 	if hotel.is_available(hotel_id):
-		hotel.book_room(hotel_id)
+		credit_card = CreditCard(card_number="1234567890123456", exp_date="05/27", holder="JOHN SMITH", cvc="123")  # Skipping the user input step for simplicity
 
-		res = Reservation(hotel_id, "Giovanni")
-		print(res.generate_invoice())
+		if credit_card.validate():
+			hotel.book_room(hotel_id)
+
+			res = Reservation(hotel_id, "Giovanni")
+			print(res.generate_invoice())
+		else:
+			print("Invalid Credit Card")
 
 	else:
 		print("This hotel is unavailable")
