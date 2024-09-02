@@ -20,7 +20,7 @@ class Hotel:
 		df.loc[df["id"] == hotel_id, "available"] = "no"
 
 		# Save the changes
-		df.to_csv("hotel_data.csv", index=False)  # Set index=False so python doesn't add another index
+		# df.to_csv("hotel_data.csv", index=False)  # Set index=False so python doesn't add another index
 
 		print("Your room has been booked")
 
