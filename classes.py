@@ -7,6 +7,7 @@ class User:
 
 card_df = pd.read_csv("cards.csv", dtype=str).to_dict(orient="records")  # Load all the values as a string, and convert to a dictionary
 
+security_cards = pd.read_csv("card_security.csv", dtype=str)
 
 class Hotel:
 	def __init__(self, customer_name="Customer"):
@@ -80,10 +81,19 @@ class CreditCard:
 		return True if credit_card in card_df else False
 
 
-class SecureCreditCard:
-	"""Get the username and password for that card"""
+#     class_name(Inherited_class)
+class SecureCreditCard(CreditCard):
+	"""
+	Get the username and password for that card - Inheritance
+	The SecureCreditCard class will inherit values from the CreditCard class
+	This makes `CreditCard` the parent (or superclass) and `SecureCreditCard` the child (or subclass)
+	"""
 
-	pass
+	def auth(self, given_pw):
+		password = security_cards.loc[security_cards["number"] == self.card_number, "password"].squeeze()
+
+		return True if password == given_pw else False
+
 
 
 if __name__ == "__main__":
@@ -96,16 +106,17 @@ if __name__ == "__main__":
 
 	# Booking a room
 	if hotel.is_available(hotel_id):
-		credit_card = CreditCard(card_number="1234567890123456", exp_date="05/27",
-						 holder="JOHN SMITH", cvc="123")  # Skipping the user input step for simplicity
+		credit_card = SecureCreditCard(card_number="1234567890123456", exp_date="05/27",
+							 holder="JOHN SMITH", cvc="123")  # Skipping the user input step for simplicity
 
-		if credit_card.validate():
+		# given_pw = input("What is the password for the credit card: ")
+		if credit_card.validate() and credit_card.auth(given_pw="mypass"):
 			hotel.book_room(hotel_id)
 
 			res = Reservation(hotel_id, "Giovanni")
 			print(res.generate_invoice())
 		else:
-			print("Invalid Credit Card")
+			print("Invalid Credit Card Credentials")
 
 	else:
 		print("This hotel is unavailable")
